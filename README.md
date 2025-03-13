@@ -1,5 +1,13 @@
 # Warehouse
-Project for react development lessons
+HW 2:
+
+Вам необходимо создать базовый десктопный интерфейс, на котором отображается информация
+о существующих на складе товарах.
+Сам интерфейс состоит из следующих блоков:
+• Список товаров
+• Навигационная панель
+• Боковое меню
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
