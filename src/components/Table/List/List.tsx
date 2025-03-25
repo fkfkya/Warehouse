@@ -1,9 +1,8 @@
-import React, { useEffect, useState }  from 'react';
-import './ProductList.css'; 
+import React, { useState }  from 'react';
 import Card from '../Card/Card';
-import Modal from '../Modal/Modal';
+import { Pagination, Stack, Box } from "@mui/material";
 
-interface Product {
+export interface Product {
     id: number;
     name: string;
     description: string;
@@ -13,51 +12,72 @@ interface Product {
     imageUrl?: string;
 }
 
-const ProductList: React.FC = () => {
-    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
-    const [products, setProducts] = useState<Product[]>([]);
-
-    useEffect(() => {
-        fetch('./src/testdata.json')
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Ошибка загрузки данных");
-            } else {
-                console.log("Data downloaded successfull")
-                return response.json();
-            }
-        })
-        .then((data: Product[]) => {
-            setProducts(data);
-        })
-        .catch((error) => {
-            console.error("Ошибка при загрузке данных:", error);
-        });
-    }, []);
-      
-    const openModal = (product: Product) => setSelectedProduct(product);
-    const closeModal = () => setSelectedProduct(null);
-    
-    console.log('Компонент MyComponent был отрендерен!');
-    
-    return(
-        <section className='product-list'>
-            {products.map((product) => (
-                <Card key={product.id}
-                {...product}
-                onClick={() => openModal(product)}
-                 />
-            ))}
-            {selectedProduct && (
-                <Modal 
-                {...selectedProduct}
-                onClose={closeModal}/>
-            )}
-            
-        </section>
-    );
-
+interface ProductListProps {
+  products: Product[];
 }
+
+
+const ProductList: React.FC<ProductListProps> = ({ products }) => {
+  const [page, setPage] = useState(1); 
+  const itemsPerPage = 9; 
+
+  const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
+  console.log(products);
+  const paginatedProducts = products.slice(
+    (page - 1) * itemsPerPage,
+    page * itemsPerPage
+  );
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        width: "100%", 
+      }}
+    >
+      <Box
+        sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "50px",
+            padding: "60px",
+            marginLeft: { xs: "0", md: "0px" },
+            marginBottom: "30px",
+            boxSizing: "border-box",
+            width: "100%", 
+        }}
+      >
+        {paginatedProducts.map((product) => (
+          <Box key={product.id}>
+            <Card product={product} />
+          </Box>
+        ))}
+      </Box>
+
+      <Stack spacing={2} alignItems="center">
+        <Pagination
+          count={Math.ceil(products.length / itemsPerPage)}
+          page={page}
+          onChange={handlePageChange}
+          color="secondary"
+          sx={{
+            "& .MuiPaginationItem-root": { color: "#FFFFFF" },
+            "& .Mui-selected": {
+              color: "#FFFFFF",
+              backgroundColor: "#673AB7",
+            },
+            "& .MuiPaginationItem-root:hover": {
+              backgroundColor: "#424242",
+            },
+          }}
+        />
+      </Stack>
+    </Box>
+  );
+};
 
 export default ProductList;
