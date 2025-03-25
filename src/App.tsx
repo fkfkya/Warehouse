@@ -2,7 +2,7 @@ import { useState, useEffect} from 'react'
 import ProductList, {Product} from './components/Table/List/List';
 import Sidebar, {Filters} from './components/Bars/Sidebar/Sidebar';
 import Navbar from  './components/Bars/Navbar/Navbar';
-import './App.css'
+
 
 const App: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]); 
